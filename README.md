@@ -30,8 +30,8 @@ A minimal, modern React application for chatting with Dify AI Agents, supporting
 
 1.  Clone the repository.
     ```bash
-    git clone https://github.com/yourusername/dify-chat-stream.git
-    cd dify-chat-stream
+    git clone https://github.com/NTLx/dify.chat.stream.git
+    cd dify.chat.stream
     ```
 2.  Install dependencies:
     ```bash
