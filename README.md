@@ -1,11 +1,15 @@
 # Dify Chat Stream
 
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![React](https://img.shields.io/badge/react-18.3.1-61dafb.svg)
+![Vite](https://img.shields.io/badge/vite-5.4.1-646cff.svg)
+
 A minimal, modern React application for chatting with Dify AI Agents, supporting streaming responses and Markdown rendering.
 
 ## Features
 
 - **Streaming Responses**: Real-time typing effect from Dify API.
-- **Markdown Support**: Renders rich text, code blocks, and tables.
+- **Markdown Support**: Renders rich text, code blocks, and tables using `react-markdown`.
 - **Dual Deployment Modes**:
     - **Proxy Mode**: For local development and Vercel (Serverless Function).
     - **Direct Mode**: For static hosting like GitHub Pages (Client-side API calls).
@@ -13,6 +17,7 @@ A minimal, modern React application for chatting with Dify AI Agents, supporting
     - Settings UI to configure API URL and Key at runtime.
     - Supports multiple users connecting to different Dify instances.
     - Environment variable fallbacks.
+
 
 ## Getting Started
 
@@ -24,6 +29,10 @@ A minimal, modern React application for chatting with Dify AI Agents, supporting
 ### Local Development
 
 1.  Clone the repository.
+    ```bash
+    git clone https://github.com/yourusername/dify-chat-stream.git
+    cd dify-chat-stream
+    ```
 2.  Install dependencies:
     ```bash
     npm install
@@ -63,6 +72,12 @@ The application resolves API configuration in this order:
 1.  **User Settings**: Manually entered in the UI (saved in Local Storage).
 2.  **Environment Variables**: `DIFY_API_URL` and `DIFY_API_KEY` injected at build or runtime.
 
+## Contributing
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for more details.
+
 ## License
 
-MIT
+Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
