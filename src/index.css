@@ -39,6 +39,7 @@ body {
   height: 100%;
   padding: 20px;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .messages-area {
@@ -50,6 +51,7 @@ body {
   gap: 20px;
   scrollbar-width: thin;
   scrollbar-color: var(--border-color) transparent;
+  min-height: 0;
 }
 
 .messages-area::-webkit-scrollbar {
@@ -210,18 +212,14 @@ body {
 .input-area {
   padding: 20px;
   background-color: transparent;
-  position: sticky;
-  bottom: 0;
   max-width: 900px;
   margin: 0 auto;
   width: 100%;
   box-sizing: border-box;
-  pointer-events: none;
-  /* Let clicks pass through transparent areas */
+  flex-shrink: 0;
 }
 
 .input-container {
-  pointer-events: auto;
   /* Re-enable clicks on the input itself */
   position: relative;
   display: flex;

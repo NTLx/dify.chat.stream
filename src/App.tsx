@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import type { Message, StreamEvent } from './types';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { MermaidBlock } from './components/MermaidBlock';
 import './index.css';
 
 function App() {
@@ -44,19 +45,51 @@ function App() {
     localStorage.setItem('dify_config', JSON.stringify(config));
   }, [config]);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
+    const container = document.querySelector('.messages-area');
+    if (container) {
+      if (behavior === 'auto') {
+        container.scrollTop = container.scrollHeight;
+      } else {
+        container.scrollTo({ top: container.scrollHeight, behavior });
+      }
+    }
   };
 
   // Auto-scroll to bottom
   useEffect(() => {
-    scrollToBottom();
+    const lastMessage = messages[messages.length - 1];
+    if (!lastMessage) return;
+
+    // If it's a new user message, always smooth scroll
+    if (lastMessage.role === 'user') {
+      scrollToBottom('smooth');
+      return;
+    }
+
+    // For assistant messages (streaming)
+    if (lastMessage.role === 'assistant') {
+      // Check if user is near bottom (within 100px)
+      const container = document.querySelector('.messages-area');
+      if (container) {
+        const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 100;
+
+        // Only auto-scroll if user is already reading at the bottom
+        if (isNearBottom) {
+          // Use 'auto' (instant) scroll for streaming to prevent jitter
+          scrollToBottom('auto');
+        }
+      } else {
+        // Fallback if container not found
+        scrollToBottom('auto');
+      }
+    }
   }, [messages]);
 
   // Auto-resize textarea
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = '24px';
+      textareaRef.current.style.height = 'auto';
       textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 150)}px`;
     }
   }, [input]);
@@ -219,6 +252,22 @@ function App() {
               <div className="markdown-body">
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
+                  components={{
+                    code({ node, inline, className, children, ...props }: any) {
+                      const match = /language-(\w+)/.exec(className || '');
+                      const isMermaid = match && match[1] === 'mermaid';
+
+                      if (!inline && isMermaid) {
+                        return <MermaidBlock code={String(children).replace(/\n$/, '')} />;
+                      }
+
+                      return (
+                        <code className={className} {...props}>
+                          {children}
+                        </code>
+                      );
+                    }
+                  }}
                 >
                   {msg.content}
                 </ReactMarkdown>
