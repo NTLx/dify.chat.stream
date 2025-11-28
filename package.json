@@ -2,6 +2,14 @@
   "name": "dify-chat-stream",
   "private": true,
   "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NTLx/dify.chat.stream.git"
+  },
+  "bugs": {
+    "url": "https://github.com/NTLx/dify.chat.stream/issues"
+  },
+  "homepage": "https://github.com/NTLx/dify.chat.stream#readme",
   "type": "module",
   "engines": {
     "node": ">=18.0.0"

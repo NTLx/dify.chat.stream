@@ -51,6 +51,8 @@ A minimal, modern React application for chatting with Dify AI Agents, supporting
 
 #### Vercel (Recommended)
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FNTLx%2Fdify.chat.stream&env=DIFY_API_URL,DIFY_API_KEY&project-name=dify-chat-stream&repository-name=dify-chat-stream)
+
 1.  Import the project into Vercel.
 2.  Set Environment Variables in Vercel Project Settings:
     - `DIFY_API_URL`
@@ -65,6 +67,18 @@ A minimal, modern React application for chatting with Dify AI Agents, supporting
 4.  Add `DIFY_API_URL` as a Repository Variable.
 5.  The included GitHub Actions workflow will automatically build and deploy to the `gh-pages` branch.
 6.  Go to **Settings > Pages** and ensure the source is set to "GitHub Actions".
+
+#### Docker (Self-Hosted)
+
+1.  Build and run using Docker Compose:
+    ```bash
+    docker compose up -d --build
+    ```
+2.  The application will be available at `http://localhost:3000`.
+3.  To configure environment variables, modify `.env` or pass them directly:
+    ```bash
+    DIFY_API_URL=https://api.dify.ai/v1 DIFY_API_KEY=your-key docker compose up -d
+    ```
 
 ## Configuration Priority
 
