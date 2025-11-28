@@ -70,15 +70,17 @@ A minimal, modern React application for chatting with Dify AI Agents, supporting
 
 #### Docker (Self-Hosted)
 
-1.  Build and run using Docker Compose:
+1.  Run using Docker Compose (uses pre-built image by default):
     ```bash
-    docker compose up -d --build
+    docker compose up -d
     ```
 2.  The application will be available at `http://localhost:3000`.
 3.  To configure environment variables, modify `.env` or pass them directly:
     ```bash
     DIFY_API_URL=https://api.dify.ai/v1 DIFY_API_KEY=your-key docker compose up -d
     ```
+
+    *Note: To build from source, uncomment the `build: .` line in `docker-compose.yml` and run with `--build`.*
 
 ## Configuration Priority
 

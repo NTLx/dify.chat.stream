@@ -1,9 +1,16 @@
 services:
   app:
-    build: .
+    # Optional: Build from source
+    # build: .
+    image: registry.cn-shanghai.aliyuncs.com/dev_env_tools/dify.chat.stream:latest
     ports:
       - "3000:3000"
     env_file:
       - .env
     environment:
       - PORT=3000
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
