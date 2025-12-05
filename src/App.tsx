@@ -3,9 +3,44 @@ import type { Message, StreamEvent } from './types';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { MermaidBlock } from './components/MermaidBlock';
+import { ThinkBlock } from './components/ThinkBlock';
 import './index.css';
 
 function App() {
+  // 解析 <think> 标签，将内容分割为普通文本和 think 块
+  const parseThinkTags = (content: string) => {
+    const thinkRegex = /<think>([\s\S]*?)<\/think>/g;
+    const parts: Array<{ type: 'text' | 'think'; content: string }> = [];
+    let lastIndex = 0;
+    let match;
+
+    while ((match = thinkRegex.exec(content)) !== null) {
+      // 添加 think 标签之前的内容
+      if (match.index > lastIndex) {
+        parts.push({
+          type: 'text',
+          content: content.slice(lastIndex, match.index)
+        });
+      }
+      // 添加 think 标签内容
+      parts.push({
+        type: 'think',
+        content: match[1]
+      });
+      lastIndex = thinkRegex.lastIndex;
+    }
+
+    // 添加最后剩余的内容
+    if (lastIndex < content.length) {
+      parts.push({
+        type: 'text',
+        content: content.slice(lastIndex)
+      });
+    }
+
+    return parts.length > 0 ? parts : [{ type: 'text', content }];
+  };
+
   const [messages, setMessages] = useState<Message[]>(() => {
     const saved = localStorage.getItem('chat_messages');
     return saved ? JSON.parse(saved) : [];
@@ -250,27 +285,47 @@ function App() {
             </div>
             <div className="message-content">
               <div className="markdown-body">
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  components={{
-                    code({ node, inline, className, children, ...props }: any) {
-                      const match = /language-(\w+)/.exec(className || '');
-                      const isMermaid = match && match[1] === 'mermaid';
+                {parseThinkTags(msg.content).map((part, idx) => {
+                  if (part.type === 'think') {
+                    const isStreaming = isLoading &&
+                      messages[messages.length - 1]?.id === msg.id;
+                    return (
+                      <ThinkBlock
+                        key={idx}
+                        content={part.content}
+                        isStreaming={isStreaming}
+                      />
+                    );
+                  } else {
+                    // 跳过空内容
+                    if (!part.content.trim()) return null;
 
-                      if (!inline && isMermaid) {
-                        return <MermaidBlock code={String(children).replace(/\n$/, '')} />;
-                      }
+                    return (
+                      <ReactMarkdown
+                        key={idx}
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          code({ node, inline, className, children, ...props }: any) {
+                            const match = /language-(\w+)/.exec(className || '');
+                            const isMermaid = match && match[1] === 'mermaid';
 
-                      return (
-                        <code className={className} {...props}>
-                          {children}
-                        </code>
-                      );
-                    }
-                  }}
-                >
-                  {msg.content}
-                </ReactMarkdown>
+                            if (!inline && isMermaid) {
+                              return <MermaidBlock code={String(children).replace(/\n$/, '')} />;
+                            }
+
+                            return (
+                              <code className={className} {...props}>
+                                {children}
+                              </code>
+                            );
+                          }
+                        }}
+                      >
+                        {part.content}
+                      </ReactMarkdown>
+                    );
+                  }
+                })}
               </div>
               {msg.role === 'assistant' && isLoading && msg.content === '' && (
                 <div className="typing-indicator">
